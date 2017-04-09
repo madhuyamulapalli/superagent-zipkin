@@ -1,0 +1,30 @@
+{
+  "name": "superagent-zipkin",
+  "version": "1.0.0",
+  "description": "A plugin for superagent that logs traces to zipkin.",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "rm -rf build && babel index.js -d build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/madhuyamulapalli/superagent-zipkin.git"
+  },
+  "keywords": [
+    "zipkin",
+    "superagent"
+  ],
+  "author": "Madhu Yamulapalli <madhumurty@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-register": "^6.18.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.1.2",
+    "sinon": "^1.17.6",
+    "zipkin": "0.6.1",
+    "zipkin-transport-http": "0.6.1"
+  }
+}
