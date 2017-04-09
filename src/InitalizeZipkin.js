@@ -14,4 +14,3 @@ class InitalizeZipkin {
     return zipkinInstance;
   }
 }
-export default InitalizeZipkin;
