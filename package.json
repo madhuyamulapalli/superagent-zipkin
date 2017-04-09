@@ -16,6 +16,11 @@
   ],
   "author": "Madhu Yamulapalli <madhumurty@gmail.com>",
   "license": "MIT",
+  "dependencies": {
+    "zipkin": "0.6.1",
+    "zipkin-context-cls": "0.6.1",
+    "zipkin-transport-http": "0.6.1",
+   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -23,8 +28,6 @@
     "babel-register": "^6.18.0",
     "chai": "^3.5.0",
     "mocha": "^3.1.2",
-    "sinon": "^1.17.6",
-    "zipkin": "0.6.1",
-    "zipkin-transport-http": "0.6.1"
+    "sinon": "^1.17.6"
   }
 }
