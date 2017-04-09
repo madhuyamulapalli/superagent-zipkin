@@ -1,10 +1,10 @@
 const zipkin = require("zipkin");
 const Annotation = zipkin.Annotation;
 const zipkinRequest = zipkin.Request;
-const InitalizeZipkin = require("../InitalizeZipkin");
+import InitalizeZipkin from "./src/InitalizeZipkin";
 export default (zipkinUrl) =>
   req => {
-    const zipkinInstance = new InitalizeZipkin(zipkinUrl);
+    var zipkinInstance = new InitalizeZipkin(zipkinUrl);
     var {tracer, serviceName = "unknown", remoteServiceName} = zipkinInstance.default;
     var traceId = null;
     req.on("request", () => {
