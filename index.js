@@ -1,19 +1,24 @@
 const zipkin = require("zipkin");
 const Annotation = zipkin.Annotation;
 const zipkinRequest = zipkin.Request;
-import InitalizeZipkin from "./src/InitalizeZipkin";
-export default (zipkinUrl) =>
+const initalizeZipkin =  require("./src/initalizeZipkin");
+export default (zipkinUrl, _remoteServiceName, _serviceName) =>
   req => {
-    var zipkinInstance = new InitalizeZipkin(zipkinUrl);
-    var {tracer, serviceName = "unknown", remoteServiceName} = zipkinInstance.default;
+    if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
+      throw new Error("zipkin destination url should be valid");
+    }
+    let zipkinInstance = initalizeZipkin.default;
+    var {tracer, serviceName = (_serviceName) ? _serviceName: "unknwown", remoteServiceName} = zipkinInstance(zipkinUrl, _remoteServiceName);
     var traceId = null;
     req.on("request", () => {
       traceId = tracer.id;
       tracer.scoped(function () {
         tracer.setId(tracer.createChildId());
         traceId = tracer.id;
-        serviceName = req.url;
         let method = req.method || "GET";
+        if (!_serviceName) {
+          serviceName = req.url;
+        }
         tracer.recordServiceName(serviceName);
         tracer.recordRpc(method.toUpperCase());
         tracer.recordBinary("http.url", req.url);

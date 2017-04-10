@@ -1,13 +1,12 @@
 import {BatchRecorder} from "zipkin";
 import {HttpLogger} from "zipkin-transport-http";
 export default (zipkinUrl) => {
-  let zipkinBaseUrl = zipkinUrl;
-  if (zipkinBaseUrl === null || zipkinBaseUrl === undefined) {
-    zipkinBaseUrl = "http://localhost:9411";
+  if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
+    throw new Error("zipkin destination url should be valid");
   }
   return new BatchRecorder({
     logger: new HttpLogger({
-      endpoint: `${zipkinBaseUrl}/api/v1/spans`
+      endpoint: `${zipkinUrl}/api/v1/spans`
     })
   });
 };
