@@ -1,6 +1,4 @@
-const zipkin = require("zipkin");
-const Annotation = zipkin.Annotation;
-const zipkinRequest = zipkin.Request;
+const {Request, Annotation} = require("zipkin");
 const initalizeZipkin =  require("./src/initalizeZipkin");
 export default (zipkinUrl, _remoteServiceName, _serviceName) =>
   req => {
