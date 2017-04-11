@@ -4,24 +4,24 @@ const zipkinRequest = zipkin.Request;
 const initalizeZipkin =  require("./src/initalizeZipkin");
 export default (zipkinUrl, _remoteServiceName, _serviceName) =>
   req => {
-    if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
+if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
       throw new Error("zipkin destination url should be valid");
     }
     let zipkinInstance = initalizeZipkin.default;
     var {tracer, serviceName = (_serviceName) ? _serviceName: "unknwown", remoteServiceName} = zipkinInstance(zipkinUrl, _remoteServiceName);
     var traceId = null;
-    req.on("request", () => {
-      traceId = tracer.id;
+    req.on("request", (options) => {
       tracer.scoped(function () {
         tracer.setId(tracer.createChildId());
         traceId = tracer.id;
-        let method = req.method || "GET";
+        const wrappedOptions = Request.addZipkinHeaders(options, traceId);
+        let method = wrappedOptions.method || "GET";
         if (!_serviceName) {
           serviceName = req.url;
         }
         tracer.recordServiceName(serviceName);
         tracer.recordRpc(method.toUpperCase());
-        tracer.recordBinary("http.url", req.url);
+        tracer.recordBinary("http.url", wrappedOptions.uri || wrappedOptions.url);
         tracer.recordAnnotation(new Annotation.ClientSend());
         if (remoteServiceName) {
           // TODO: can we get the host and port of the http connection?
@@ -29,7 +29,6 @@ export default (zipkinUrl, _remoteServiceName, _serviceName) =>
             serviceName: remoteServiceName
           }));
         }
-        zipkinRequest.addZipkinHeaders({}, traceId);
       });
     });
     req.on("end", () => {
