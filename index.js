@@ -8,26 +8,23 @@ if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
     let zipkinInstance = initalizeZipkin.default;
     var {tracer, serviceName = (_serviceName) ? _serviceName: "unknwown", remoteServiceName} = zipkinInstance(zipkinUrl, _remoteServiceName);
     var traceId = null;
-    req.on("request", (options) => {
-      tracer.scoped(function () {
-        tracer.setId(tracer.createChildId());
-        traceId = tracer.id;
-        const wrappedOptions = Request.addZipkinHeaders(options, traceId);
-        let method = wrappedOptions.method || "GET";
-        if (!_serviceName) {
-          serviceName = req.url;
-        }
-        tracer.recordServiceName(serviceName);
-        tracer.recordRpc(method.toUpperCase());
-        tracer.recordBinary("http.url", wrappedOptions.uri || wrappedOptions.url);
-        tracer.recordAnnotation(new Annotation.ClientSend());
-        if (remoteServiceName) {
-          // TODO: can we get the host and port of the http connection?
-          tracer.recordAnnotation(new Annotation.ServerAddr({
-            serviceName: remoteServiceName
-          }));
-        }
-      });
+    tracer.scoped(function () {
+      tracer.setId(tracer.createChildId());
+      traceId = tracer.id;
+      const wrappedOptions = Request.addZipkinHeaders(options, traceId);
+      let method = wrappedOptions.method || "GET";
+      if (!_serviceName) {
+        serviceName = req.url;
+      }
+      tracer.recordServiceName(serviceName);
+      tracer.recordRpc(method.toUpperCase());
+      tracer.recordBinary("http.url", wrappedOptions.uri || wrappedOptions.url);
+      tracer.recordAnnotation(new Annotation.ClientSend());
+      if (remoteServiceName) {
+        tracer.recordAnnotation(new Annotation.ServerAddr({
+          serviceName: remoteServiceName
+        }));
+      }
     });
     req.on("end", () => {
       tracer.scoped(() => {
