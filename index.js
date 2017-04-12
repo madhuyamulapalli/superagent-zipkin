@@ -31,6 +31,7 @@ if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
       tracer.recordRpc(method.toUpperCase());
       tracer.recordBinary("http.url", wrappedOptions.uri || wrappedOptions.url);
       tracer.recordAnnotation(new Annotation.ClientSend());
+      tracer.recordAnnotation(new Annotation.LocalAddr({ port: port }));
       if (remoteServiceName) {
         tracer.recordAnnotation(new Annotation.ServerAddr({
           serviceName: remoteServiceName
