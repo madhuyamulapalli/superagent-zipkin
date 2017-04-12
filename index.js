@@ -1,5 +1,6 @@
 const {Request, Annotation} = require("zipkin");
 const initalizeZipkin =  require("./src/initalizeZipkin");
+const _ = require("lodash");
 export default (zipkinUrl, _remoteServiceName, _serviceName) =>
   req => {
 if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
@@ -25,6 +26,7 @@ if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
           serviceName: remoteServiceName
         }));
       }
+      _.assign(req.header, wrappedOptions.headers);
     });
     req.on("end", () => {
       tracer.scoped(() => {
