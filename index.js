@@ -11,7 +11,7 @@ if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
     tracer.scoped(function () {
       tracer.setId(tracer.createChildId());
       traceId = tracer.id;
-      const wrappedOptions = Request.addZipkinHeaders(options, traceId);
+      const wrappedOptions = Request.addZipkinHeaders(req, traceId);
       let method = wrappedOptions.method || "GET";
       if (!_serviceName) {
         serviceName = req.url;
