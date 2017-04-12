@@ -15,13 +15,22 @@ if (!zipkinUrl || zipkinUrl.length > 0 && zipkinUrl.trim() === "") {
       const wrappedOptions = Request.addZipkinHeaders(req, traceId);
       let method = wrappedOptions.method || "GET";
       if (!_serviceName) {
-        serviceName = req.url;
+        let modifiedServiceName = req.url;
+        if (req.url) {
+            let tempUrl = req.url;
+            let splitUrls  = _.split(tempUrl, "/");
+            if(splitUrls.length > 0) {
+              let lastVal = splitUrls[splitUrls.length - 1];
+              splitUrls[splitUrls.length - 1] = _.split(lastVal, "?")[0];
+              modifiedServiceName = _.join(_.drop(splitUrls, 3), "/");
+            }
+            serviceName = modifiedServiceName;
+        }
       }
       tracer.recordServiceName(serviceName);
       tracer.recordRpc(method.toUpperCase());
       tracer.recordBinary("http.url", wrappedOptions.uri || wrappedOptions.url);
       tracer.recordAnnotation(new Annotation.ClientSend());
-      tracer.recordClientAddr("clientip");
       if (remoteServiceName) {
         tracer.recordAnnotation(new Annotation.ServerAddr({
           serviceName: remoteServiceName
